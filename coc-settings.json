@@ -1,0 +1,7 @@
+{
+    "coc.preferences.extensionUpdateCheck": "daily",
+    "coc.preferences.formatOnSaveFiletypes": [
+        "json"
+    ],
+    "explorer.icon.enableNerdfont": true
+}
