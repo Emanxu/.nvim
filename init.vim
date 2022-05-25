@@ -1,8 +1,11 @@
 " ==================== Editor behavior ====================
+filetype on
 "  让某些终端可能显示颜色有问题修复正常
 let &t_ut=''
 " 显示当前行光标
 set cursorline
+"  上下浏览的时候最少保留行数
+set scrolloff=5
 "使用系统寄存器(剪切板)
 set clipboard=unnamedplus
 " 显示行号
@@ -231,5 +234,9 @@ let g:bullets_enabled_file_types = [
     \]
 
 
-
-
+" ==================== Markdown Settings ====================
+" Snippets
+source $HOME/.config/nvim/md-snippets.vim
+" auto spell
+autocmd BufRead,BufNewFile *.md setlocal spell
+ "启用Markdown拼写检查
