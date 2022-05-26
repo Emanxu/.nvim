@@ -1,70 +1,45 @@
 " ==================== Editor behavior ====================
 filetype on
-"  让某些终端可能显示颜色有问题修复正常
+"set clipboard=unnamedplus
 let &t_ut=''
-" 显示当前行光标
-set cursorline
-"  上下浏览的时候最少保留行数
-set scrolloff=5
-"使用系统寄存器(剪切板)
-set clipboard=unnamedplus
-" 显示行号
-set number
-" 设置相对行号
-set relativenumber
-" 设置自动这行
-set wrap
-" 是否显示状态栏
-set laststatus=2
-" 语法高亮
-syntax on
-" 支持鼠标
-set mouse=a
-" 设置编码格式
-set encoding=utf-8
-" 启用256色
-"  set t_Co=256
-" 开启文件类型检查
-filetype indent on
-" 设置自动缩进
-set autoindent
-" 设置tab缩进数量
-set tabstop=4
-" 设置>>与<<的缩进数量
-set shiftwidth=4
-" 将缩进转换为空格
-set expandtab
-" 自动高亮匹配符号
-set showmatch
-" 自动高亮匹配搜索结果
-set hlsearch
-" 边搜索边高亮
-set incsearch
-" 开启类型检查
-set spell spelllang=en_us
-" 开启命令补全
-set wildmenu
-" 不创建备份文件
-set nobackup
-" 不创建交换文件
-set noswapfile
-" 多窗口下光标移动到其他窗口时自动切换工作目录
 set autochdir
-" 忽略大小写
-set ignorecase
-" 智能大小写
-set smartcase
-" 取消自带模式显示
+set exrc
+set secure
+set number
+set relativenumber
+set cursorline
+set noexpandtab
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set autoindent
+set list
+set listchars=tab:\|\ ,trail:▫
+set scrolloff=4
+set ttimeoutlen=0
+set notimeout
+set viewoptions=cursor,folds,slash,unix
+set wrap
+set tw=0
+set indentexpr=
+set foldmethod=indent
+set foldlevel=99
+set foldenable
+set formatoptions-=tc
+set splitright
+set splitbelow
 set noshowmode
-"  自动补全不自动选中
-set completeopt=longest,noinsert,menuone,noselect,preview
-" 等待命令的刷新率
-set updatetime=100
-" Don't pass messages to |ins-completion-menu|.
+set ignorecase
+set smartcase
 set shortmess+=c
-
+set inccommand=split
+set completeopt=longest,noinsert,menuone,noselect,preview
+set lazyredraw
+set visualbell
 " ==================== Basic Mappings ====================
 let mapleader=" "
+" Open the vimrc file anytime
+nnoremap <LEADER>rc :e $HOME/.config/nvim/init.vim<CR>
 
 " Search 正常模式下按 空格+回车 取消高亮显示 
 noremap <LEADER><CR> :nohlsearch<CR>
@@ -110,8 +85,7 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#buffer_nr_show = 1
-
-
+let g:airline_powerline_fonts = 1
 
 " ==================== coc.nvim====================
 let g:coc_global_extensions = [
