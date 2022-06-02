@@ -1,6 +1,6 @@
 " ==================== Editor behavior ====================
 filetype on
-"set clipboard=unnamedplus
+set clipboard=unnamedplus
 let &t_ut=''
 set autochdir
 set exrc
@@ -43,14 +43,26 @@ nnoremap <LEADER>rc :e $HOME/.config/nvim/init.vim<CR>
 
 " Search 正常模式下按 空格+回车 取消高亮显示 
 noremap <LEADER><CR> :nohlsearch<CR>
+
+
+" 插入模式下上下左右的映射
+inoremap <A-h> <left>
+inoremap <A-l> <right>
+inoremap <A-j> <down>
+inoremap <A-k> <up>
+
+
+
 " ==================== Plug install ====================
 call plug#begin('~/.config/nvim/plugged')
 "  中文文档
 Plug 'yianwillis/vimcdoc'
 
+
 "  主题
 Plug 'sainnhe/sonokai'
-"  airline
+
+"  主题.vim
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
@@ -66,6 +78,10 @@ Plug 'mbbill/undotree'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 " 自动序列
 Plug 'dkarter/bullets.vim'
+Plug 'mzlogin/vim-markdown-toc'
+
+" git相关
+Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 
@@ -79,13 +95,9 @@ let g:sonokai_style = 'maia'
 let g:sonokai_better_performance = 1
 colorscheme sonokai
 
-" airline
-let g:airline_theme = 'sonokai'
+" airline themes
+let g:airline_theme='base16'
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:airline_powerline_fonts = 1
 
 " ==================== coc.nvim====================
 let g:coc_global_extensions = [
@@ -138,10 +150,6 @@ if has('nvim')
 
 
 
-
-
-
-
 " ==================== Undotree ====================
 noremap L :UndotreeToggle<CR>
 let g:undotree_WindowLayout = 2
@@ -188,8 +196,6 @@ nnoremap tt :CocCommand explorer<CR>
       exec "MarkdownPreviewToggle"
     endif
   endfunc
-  
-
 " =================== markdown ==========
 " specify browser to open preview page
 " for path with space
@@ -214,3 +220,27 @@ source $HOME/.config/nvim/md-snippets.vim
 " auto spell
 autocmd BufRead,BufNewFile *.md setlocal spell
  "启用Markdown拼写检查
+ 
+
+" ==================== vim-markdown-toc ====================
+let g:vmt_cycle_list_item_markers = 1
+let g:vmt_fence_text = 'TOC'
+let g:vmt_fence_closing_text = '/TOC'
+
+
+
+
+" ==================== GitGutter ====================
+let g:gitgutter_sign_allow_clobber = 0
+let g:gitgutter_map_keys = 0
+let g:gitgutter_override_sign_column_highlight = 0
+let g:gitgutter_preview_win_floating = 1
+let g:gitgutter_sign_added = '▎'
+let g:gitgutter_sign_modified = '░'
+let g:gitgutter_sign_removed = '▏'
+let g:gitgutter_sign_removed_first_line = '▔'
+let g:gitgutter_sign_modified_removed = '▒'
+nnoremap <LEADER>gf :GitGutterFold<CR>
+nnoremap H :GitGutterPreviewHunk<CR>
+nnoremap <LEADER>g- :GitGutterPrevHunk<CR>
+nnoremap <LEADER>g= :GitGutterNextHunk<CR>
