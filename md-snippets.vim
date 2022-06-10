@@ -1,6 +1,6 @@
 augroup markdown-quick
 	autocmd!
-	autocmd Filetype markdown inoremap <buffer> ,f <Esc>/<++><CR>:nohlsearch<CR>"_c4l
+	autocmd Filetype markdown inoremap <buffer> ,. <Esc>/<++><CR>:nohlsearch<CR>"_c4l
 	autocmd Filetype markdown inoremap <buffer> <c-e> <Esc>/<++><CR>:nohlsearch<CR>"_c4l
 	autocmd Filetype markdown inoremap <buffer> ,w <Esc>/ <++><CR>:nohlsearch<CR>"_c5l<CR>
 	autocmd Filetype markdown inoremap <buffer> ,n ---<Enter><Enter>
