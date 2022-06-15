@@ -66,14 +66,12 @@ set virtualedit=block
 " ==================== Basic Mappings ====================
 let mapleader=" "
 " Open the vimrc file anytime
-"nnoremap <LEADER>rc :e $HOME/.config/nvim/init.vim<CR>
 nnoremap <LEADER>rc :e $MYVIMRC<CR>
 " reflash the vimrc file anytime
 nnoremap <LEADER>sv :so $MYVIMRC<CR>
 
 " Search 正常模式下按 空格+回车 取消高亮显示 
 nnoremap <LEADER><CR> :nohlsearch<CR>
-
 
 " 插入模式下上下左右的映射
 inoremap <A-h> <left>
@@ -95,12 +93,17 @@ nnoremap ,M :tabprevious<CR>
 call plug#begin('~/.config/nvim/plugged')
 "  中文文档
 Plug 'yianwillis/vimcdoc'
+" ===
+" === theniceboy
+" ===
+Plug 'theniceboy/nvim-deus'
+Plug 'theniceboy/vim-snippets'
 
-"=====junegunn家插件
+" ===
+" === junegunn
+" ===
 " help for vim-plug
 Plug 'junegunn/vim-plug'
-"  主题
-Plug 'theniceboy/nvim-deus'
 " fzf finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
@@ -108,9 +111,13 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/vim-emoji'
+
 "==================
 "  状态栏
-Plug 'itchyny/lightline.vim'
+Plug 'nvim-lualine/lualine.nvim'
+" If you want to have icons in your statusline choose one of these
+Plug 'kyazdani42/nvim-web-devicons'
+
 
 "  coc.nvim
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -121,12 +128,19 @@ Plug 'mbbill/undotree'
 " markdown 
 "  如果出现报错,nvim包里面执行yarn install 然后回来重装即可
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install',
-																			\'for': ['markdown', 'vimwiki'], 'on': 'MarkdownPreview' }
+																			\'for': 'markdown', 'on': 'MarkdownPreview' }
 " 自动序列
-Plug 'dkarter/bullets.vim'
-Plug 'mzlogin/vim-markdown-toc',{'for': ['markdown', 'vimwiki'] }
-Plug 'vimwiki/vimwiki'
+"Plug 'dkarter/bullets.vim'
+"markdown toc title
+Plug 'mzlogin/vim-markdown-toc',{'for': 'markdown' }
+Plug 'jakewvincent/mkdnflow.nvim'
+" markdown table
 Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'markdown', 'vim-plug'] }
+"贴图 markdown 
+Plug 'ferrine/md-img-paste.vim',{'for': 'markdown' }
+autocmd FileType markdown nnoremap <buffer> <silent> <leader>v :call mdip#MarkdownClipboardImage()<CR>
+let g:mdip_imgdir = 'images'
+"let g:mdip_imgname = 'image'
 
 " git相关
 Plug 'airblade/vim-gitgutter'
@@ -137,6 +151,7 @@ Plug 'liuchengxu/vista.vim',{'on': 'Vista'}
 " nvim-treesitter/nvim-treesitter
 " require gcc-c++ and libstdc++ on your system 
 Plug 'nvim-treesitter/nvim-treesitter'
+
 call plug#end()
 
 
@@ -155,19 +170,37 @@ hi NonText ctermfg=gray guifg=grey10
 " ==================== statusline ==================
 " 3: always and ONLY the last window
 set laststatus=3
-
-let g:lightline = {
-\ 'colorscheme': 'deus',
-\ 'active': {
-\   'left': [ [ 'mode', 'paste' ],
-\             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-\ },
-\ 'component_function': {
-\   'cocstatus': 'coc#status'
-\ },
-\ }
-" Use autocmd to force lightline update.
-autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+lua << EOF
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {},
+    always_divide_middle = true,
+    globalstatus = false,
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  extensions = {}
+}
+EOF
 
 " ==================== coc.nvim====================
 let g:coc_global_extensions = [
@@ -176,7 +209,7 @@ let g:coc_global_extensions = [
 			\ 'coc-pyright',
 			\ 'coc-explorer',
 			\ 'coc-lists',
-			\ 'coc-yank']
+			\ 'coc-snippets']
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
@@ -210,7 +243,7 @@ let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_DiffpanelHeight = 8
 "  Usually, I would like to store the undo files in a separate place like below.
 if has("persistent_undo")
-  let target_path = expand('~/.undodir')
+  let target_path = expand('~/.config/nvim/.undodir')
    " create the directory and any parent directories
    " if the location does not exist.
    if !isdirectory(target_path)
@@ -220,11 +253,9 @@ if has("persistent_undo")
    set undofile
 endif
 
-
 " =================== coc-nvim map ==============
 nnoremap tt :CocCommand explorer<CR>
 " yank map
-nnoremap <silent> <LEADER><LEADER>y  :<C-u>CocList -A --normal yank<CR>
 nnoremap <silent> <LEADER><LEADER>b  :<C-u>CocList -A --normal buffers<CR>
 
 " ==================== Markdown Settings ====================
@@ -236,6 +267,68 @@ nnoremap <silent> <LEADER><LEADER>b  :<C-u>CocList -A --normal buffers<CR>
 " default: ''
 let g:mkdp_browser = 'firefox'
 
+" ===
+" === mkdnflow
+" ===
+" Include the setup function somewhere else in your init.vim file, or the
+" plugin won't activate itself:
+lua << EOF
+-- ** DEFAULT SETTINGS; TO USE THESE, PASS AN EMPTY TABLE TO THE SETUP FUNCTION **
+require('mkdnflow').setup({
+    filetypes = {md = true, rmd = true, markdown = true},
+    create_dirs = true,             
+    perspective = {
+        priority = 'first',
+        fallback = 'current',
+        root_tell = false,
+        nvim_wd_heel = true
+    },    
+    wrap = false,
+    bib = {
+        default_path = nil,
+        find_in_root = true
+    },
+    silent = false,
+    use_mappings_table = true,
+    links = {
+        style = 'markdown',
+        implicit_extension = nil,
+        transform_implicit = false,
+        transform_explicit = function(text)
+            text = text:gsub(" ", "-")
+            text = text:lower()
+            text = os.date('%Y-%m-%d_')..text
+            return(text)
+        end
+    },
+    to_do = {
+        symbols = {' ', '-', 'X'},
+        update_parents = true,
+        not_started = ' ',
+        in_progress = '-',
+        complete = 'X'
+    },
+    mappings = {
+        MkdnNextLink = {'n', '<Tab>'},
+        MkdnPrevLink = {'n', '<S-Tab>'},
+        MkdnNextHeading = {'n', '<leader>]'},
+        MkdnPrevHeading = {'n', '<leader>['},
+        MkdnGoBack = {'n', '<BS>'},
+        MkdnGoForward = {'n', '<Del>'},
+        MkdnFollowLink = {{'n', 'v'}, '<CR>'},
+        MkdnDestroyLink = {'n', '<M-CR>'},
+        MkdnMoveSource = {'n', '<F2>'},
+        MkdnYankAnchorLink = {'n', 'ya'},
+        MkdnYankFileAnchorLink = {'n', 'yfa'},
+        MkdnIncreaseHeading = {'n', '+'},
+        MkdnDecreaseHeading = {'n', '-'},
+        MkdnToggleToDo = {{'n', 'v'}, '<C-Space>'},
+        MkdnNewListItem = {'i', '<CR>'},
+        MkdnExtendList = false,
+        MkdnUpdateNumbering = {'n', '<leader>nn'}
+    }
+})
+EOF
 
 "======================== vim-table-mode ==============================
 nnoremap <LEADER>tm :TableModeToggle<CR>
@@ -250,19 +343,8 @@ let g:bullets_enabled_file_types = [
 	\ 'scratch'
 	\]
 
-" Snippets ============================================
+"markdown Snippets ============================================
 source $HOME/.config/nvim/md-snippets.vim
-
-"===================== vimwiki ========================
-let g:vimwiki_list = [
-	\ {'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'},
-	\ {'path': '~/wiki_CPA/tax/', 'syntax': 'markdown', 'ext': '.md'},
-	\ {'path': '~/wiki_CPA/account/', 'syntax': 'markdown', 'ext': '.md'},
-	\ {'path': '~/wiki_CPA/audit/', 'syntax': 'markdown', 'ext': '.md'},
-	\]
-
-let g:vimwiki_listsyms = '✗○◐●✓'
-nnoremap <LEADER>wl :VimwikiToggleListItem<CR>
 
 " ==================== vim-markdown-toc ====================
 let g:vmt_cycle_list_item_markers = 1
@@ -280,10 +362,10 @@ let g:gitgutter_sign_modified = emoji#for('small_orange_diamond')
 let g:gitgutter_sign_removed = emoji#for('small_red_triangle')
 let g:gitgutter_sign_removed_first_line = '羅'
 let g:gitgutter_sign_modified_removed = emoji#for('collision')
-nnoremap <LEADER>gf :GitGutterFold<CR>
-nnoremap H :GitGutterPreviewHunk<CR>
-nnoremap <LEADER>g- :GitGutterPrevHunk<CR>
-nnoremap <LEADER>g= :GitGutterNextHunk<CR>
+"nnoremap <LEADER>gf :GitGutterFold<CR>
+"nnoremap H :GitGutterPreviewHunk<CR>
+"nnoremap <LEADER>g- :GitGutterPrevHunk<CR>
+"nnoremap <LEADER>g= :GitGutterNextHunk<CR>
 
 " ======================= vista.vim =======
 " How each level is indented and what to prepend.
@@ -305,7 +387,6 @@ let g:vista_echo_cursor_strategy = 'scroll'
 let g:vista_executive_for = {
   \ 'cpp': 'vim_lsp',
   \ 'php': 'vim_lsp',
-  \ 'vimwiki': 'markdown',
 	\ 'markdown': 'toc',
   \ }
 
@@ -323,7 +404,7 @@ let g:vista#renderer#icons = {
 \   "variable": "\uf71b",
 \  }
 
-let g:vista_update_on_text_changed=1
+let g:vista_update_on_text_changed= 1
 " change vista highlinght
 "hi VistaFloat ctermbg=237 guibg=#3a3a3a
 
@@ -356,7 +437,7 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 " - Popup window (center of the screen)
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.8 } }
 " [[B]Commits] Customize the options used by 'git log':
 let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
 
@@ -365,7 +446,6 @@ command! -nargs=? -complete=dir AF
   \ call fzf#run(fzf#wrap(fzf#vim#with_preview({
   \   'source': 'fd --type f --hidden --follow --exclude .git --no-ignore . '.expand(<q-args>)
   \ })))
-
 
 " ================================ 好用的脚本 ============================
 
@@ -389,8 +469,6 @@ func! CompileRunGcc()
 		:!time bash %
 	elseif &filetype == 'markdown'
 		exec "MarkdownPreview"
-	elseif &filetype == 'vimwiki'
-		exec "MarkdownPreview"
 	elseif &filetype == 'go'
 		set splitbelow
 		:sp
@@ -398,11 +476,16 @@ func! CompileRunGcc()
 	endif
 endfunc
 
-" ================= file test function ===============
-nnoremap == :call File_test()<CR>
-func! File_test()
-	exec "w"
-	if &filetype == 'vimwiki'
-		setlocal syntax=markdown
-	endif
-endfunc
+
+" ===
+" === my function
+" ===
+
+
+
+
+" ===
+" === my command
+" ===
+
+command! -nargs=0 Time exec 'r !date'

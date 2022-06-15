@@ -38,5 +38,12 @@
 		"--hidden",
 		"--files"
 	],
-	"coc.preferences.enableMarkdown": true
+	"coc.preferences.enableMarkdown": true,
+	"snippets.ultisnips.enable": true,
+	"snippets.loadFromExtensions": true,
+	"snippets.ultisnips.directories": [
+		"$HOME/.config/nvim/plugged/vim-snippets/UltiSnips/",
+		"$HOME/.config/nvim/Ultisnips/"
+	],
+	"snippets.textmateSnippetsRoots": []
 }
